@@ -1,10 +1,7 @@
-# TODO : gérer les majuscules, les accents, les lettres déjà proposées
-
 import random
 
 # On définit une liste de mots avec lesquels on va jouer
-liste_mot = ["forban"]
-#print(liste_mot)
+liste_mot = ["forban", "fripouille", "yolo"]
 
 # On prépare une liste qui enregistrera toutes les lettres essayées
 liste_lettres_testees = []
