@@ -1,5 +1,6 @@
 import random
 import string
+import os
 
 # On définit une liste de mots avec lesquels on va jouer
 liste_mot = ["yolo"]
@@ -42,6 +43,8 @@ while not mot_trouve and (nb_tentatives > 0):
 	# S'il n'est pas trouvé, on demande de rentrer une lettre
 	lettre_proposee = input("Propose une lettre : ")
 
+	os.system("clear")
+
 	# Si y'a pas qu'une seule lette OU que pas de lettre du tout
 	if (len(lettre_proposee) > 1) or (not lettre_proposee) or (lettre_proposee not in lettres_possibles) :
 		print("Une lettre j'ai dit, baltringue !")
@@ -56,6 +59,7 @@ while not mot_trouve and (nb_tentatives > 0):
 	if (lettre_proposee not in liste_lettres_testees) and (lettre_proposee in mot) :
 		occurence_lettre_proposee = mot.count(lettre_proposee)
 		print("GG, t'as trouvé une des lettres. Le mot contient", occurence_lettre_proposee, "fois la lettre", lettre_proposee)
+		print("Nombre de tentatives restantes :", nb_tentatives)
 
 		# Enumerate permet de voir l'index de chaque lettre > utile pour les doublons
 		for index, lettre in enumerate(mot):
@@ -78,8 +82,12 @@ while not mot_trouve and (nb_tentatives > 0):
 			break
 		else:
 			print("Nombre de tentatives restantes :", nb_tentatives)
+			print("".join(mot_cache))
 
 	# On ajoute la lettre à la liste de toutes les lettres déjà proposées
 	liste_lettres_testees.append(lettre_proposee)
+	print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
+
+
 
 
