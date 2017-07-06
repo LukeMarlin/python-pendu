@@ -1,7 +1,8 @@
 import random
+import string
 
 # On définit une liste de mots avec lesquels on va jouer
-liste_mot = ["forban", "fripouille", "yolo"]
+liste_mot = ["énèagrämmù"]
 
 # On prépare une liste qui enregistrera toutes les lettres essayées
 liste_lettres_testees = []
@@ -19,6 +20,10 @@ print("A toi de jouer coco :", mot_cache)
 # On transforme le mot caché en liste pour pouvoir remplacer la lettre trouvée
 mot_cache = list(mot_cache)
 
+# On définit les caractères qui peuvent être proposés
+lettres_accents = ["à", "é", "è", "ë", "ö", "ù", "ï"]
+lettres_possibles = list(string.ascii_lowercase) + list(string.ascii_uppercase) + lettres_accents
+
 # Au début, le mot n'est pas encore trouvé
 mot_trouve = False
 
@@ -35,8 +40,8 @@ while not mot_trouve:
 	lettre_proposee = input("Propose une lettre : ")
 
 	# Si y'a pas qu'une seule lette OU que pas de lettre du tout
-	if (len(lettre_proposee) > 1) or not lettre_proposee :
-		print("Une lettre j'ai dit, baltringue, pas 0 ou plusieurs !")
+	if (len(lettre_proposee) > 1) or (not lettre_proposee) or (lettre_proposee not in lettres_possibles) :
+		print("Une lettre j'ai dit, baltringue !")
 		# On revient au début de la boucle while
 		continue
 
