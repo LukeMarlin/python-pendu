@@ -2,7 +2,7 @@ import random
 import string
 
 # On définit une liste de mots avec lesquels on va jouer
-liste_mot = ["énèagrämmù"]
+liste_mot = ["yolo"]
 
 # On prépare une liste qui enregistrera toutes les lettres essayées
 liste_lettres_testees = []
@@ -24,11 +24,14 @@ mot_cache = list(mot_cache)
 lettres_accents = ["à", "é", "è", "ë", "ö", "ù", "ï"]
 lettres_possibles = list(string.ascii_lowercase) + list(string.ascii_uppercase) + lettres_accents
 
+# On définit le nombre de tentatives
+nb_tentatives = 10
+
 # Au début, le mot n'est pas encore trouvé
 mot_trouve = False
 
 # Tant que le mot n'a pas été trouvé, on demande de rentrer une lettre 
-while not mot_trouve:
+while not mot_trouve and (nb_tentatives > 0):
 
 	# Si le mot est trouvé (plus de - dedans), on stope la boucle
 	if not "-" in mot_cache:
@@ -68,7 +71,15 @@ while not mot_trouve:
 	# Si la lettre proposée n'est pas dans le mot à trouver
 	else:
 		print("Caramba, encore raté !")
+		# On met à jour le nombre d'essais possibles
+		nb_tentatives = nb_tentatives - 1
+		if nb_tentatives == 0:
+			print("Pendu ! Try again bro.")
+			break
+		else:
+			print("Nombre de tentatives restantes :", nb_tentatives)
 
+	# On ajoute la lettre à la liste de toutes les lettres déjà proposées
 	liste_lettres_testees.append(lettre_proposee)
 
 
