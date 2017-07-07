@@ -42,19 +42,19 @@ correspondance = {
 lettres_possibles = list(string.ascii_letters)
 
 # On définit le nombre de tentatives
-nb_tentatives = 10 
+nb_tentatives = 10
 
 # Boucle principale du jeu, quand tout est bon et qu'il affiche la lettre proposée dans le mot
 def test_lettre_proposee():
 
 	lettre_trouvee = False
 
-	# Pour chaque lettre proposée (lettre de base et éventuellement variantes)	
+	# Pour chaque lettre proposée (lettre de base et éventuellement variantes)
 	for each_lettre in lettres:
 
 		# On regarde si elle est dans le mot
 		if each_lettre in mot_random:
-		
+
 			lettre_trouvee = True
 
 			# Enumerate permet de voir l'index de chaque lettre > utile pour les doublons
@@ -82,7 +82,7 @@ def print_etat_jeu():
 # Au début, le mot n'est pas encore trouvé
 #mot_trouve = False
 
-# Tant que le mot n'a pas été trouvé, on demande de rentrer une lettre 
+# Tant que le mot n'a pas été trouvé, on demande de rentrer une lettre
 #while not mot_trouve and (nb_tentatives > 0):
 while nb_tentatives > 0:
 
