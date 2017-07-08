@@ -2,16 +2,23 @@ import random
 import string
 import os
 
-# On définit une liste de mots avec lesquels on va jouer
-liste_mot = ["yolo"]
+# On ouvre un dictionnaire de mot FR avec lesquels on va jouer
+dico_mots = open("dictionnaire_francais.txt")
+
+liste_mots = []
+
+# On met chaque mot du dico dans une liste
+for each_mot in dico_mots:
+	mot = each_mot.strip()
+	liste_mots.append(mot)
 
 # On prépare une liste qui enregistrera toutes les lettres essayées
 liste_lettres_testees = []
 
 # On commence par choisir un mot aléatoire de la liste
-mot = random.choice(liste_mot)
+mot_random = random.choice(liste_mots)
 
-nb_lettre_mot = len(mot)
+nb_lettre_mot = len(mot_random)
 print("Le mot sélectionné contient", nb_lettre_mot, "lettres.")
 
 # On masque le mot à deviner pour le joueur
@@ -26,7 +33,8 @@ lettres_accents = ["à", "é", "è", "ë", "ö", "ù", "ï"]
 lettres_possibles = list(string.ascii_lowercase) + list(string.ascii_uppercase) + lettres_accents
 
 # On définit le nombre de tentatives
-nb_tentatives = 10
+nb_tentatives = 10 
+
 
 # Au début, le mot n'est pas encore trouvé
 mot_trouve = False
@@ -43,6 +51,7 @@ while not mot_trouve and (nb_tentatives > 0):
 	# S'il n'est pas trouvé, on demande de rentrer une lettre
 	lettre_proposee = input("Propose une lettre : ")
 
+	# A voir si on ne le remonte pas d'un cran
 	os.system("clear")
 
 	# Si y'a pas qu'une seule lette OU que pas de lettre du tout
@@ -56,13 +65,13 @@ while not mot_trouve and (nb_tentatives > 0):
 		continue
 
 	# On regarde si la lettre proposée ne l'a pas déjà été, et qu'elle est dans le mot à trouver
-	if (lettre_proposee not in liste_lettres_testees) and (lettre_proposee in mot) :
+	if (lettre_proposee not in liste_lettres_testees) and (lettre_proposee in mot_random) :
 		occurence_lettre_proposee = mot.count(lettre_proposee)
 		print("GG, t'as trouvé une des lettres. Le mot contient", occurence_lettre_proposee, "fois la lettre", lettre_proposee)
 		print("Nombre de tentatives restantes :", nb_tentatives)
 
 		# Enumerate permet de voir l'index de chaque lettre > utile pour les doublons
-		for index, lettre in enumerate(mot):
+		for index, lettre in enumerate(mot_random):
 			
 			if lettre == lettre_proposee:
 				index_lettre_proposee = index
