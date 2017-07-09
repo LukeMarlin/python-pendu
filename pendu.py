@@ -2,7 +2,7 @@ import random
 import string
 import os
 
-# On ouvre un dictionnaire de mot FR avec lesquels on va jouer
+# On ouvre un fichier de mots FR avec lesquels on va jouer
 dico_mots = open("dictionnaire_francais.txt")
 
 liste_mots = []
@@ -29,18 +29,62 @@ print("A toi de jouer coco :", mot_cache)
 mot_cache = list(mot_cache)
 
 # On définit les caractères qui peuvent être proposés
-lettres_accents = ["à", "é", "è", "ë", "ö", "ù", "ï"]
-lettres_possibles = list(string.ascii_lowercase) + list(string.ascii_uppercase) + lettres_accents
+# On définit une table de correspondance pour que dire à = a, é = e, etc...
+correspondance = {
+    'a': 'aàäâæ',
+    'c': 'cç',
+    'e': 'eêèéëæœ',
+    'i': 'iîï',
+    'o': 'oôöœ',
+    'u': 'uùüû'
+}
+# .ascii-letters prend à la fois minuscule et majuscules
+lettres_possibles = list(string.ascii_letters)
 
 # On définit le nombre de tentatives
 nb_tentatives = 10 
 
+# Boucle principale du jeu, quand tout est bon et qu'il affiche la lettre proposée dans le mot
+def test_lettre_proposee():
+
+	lettre_trouvee = False
+
+	# Pour chaque lettre proposée (lettre de base et éventuellement variantes)	
+	for each_lettre in lettres:
+
+		# On regarde si elle est dans le mot
+		if each_lettre in mot_random:
+		
+			lettre_trouvee = True
+
+			# Enumerate permet de voir l'index de chaque lettre > utile pour les doublons
+			# On récupère chaque lettre (ou variante) du mot et sa position associée
+			for index, lettre in enumerate(mot_random):
+
+				# On vérifie que la lettre proposée a un équivalent dans le mot
+				if each_lettre == lettre:
+					# On remplace le tiret du bon index par la lettre
+					mot_cache[index] = each_lettre
+
+	return lettre_trouvee
+
+
+# Fonction pour printer le résultat à chaque fois
+def print_etat_jeu():
+	print("~~~~~~~~~~~~~~~~~~~~~")
+	# On repasse la liste en string en joignant chaque lettre
+	print("Mot à deviner :", "".join(mot_cache))
+	print("~~~~~~~~~~~~~~~~~~~~~")
+	print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
+	print("Nombre de tentatives restantes :", nb_tentatives)
+	print("~~~~~~~~~~~~~~~~~~~~~")
 
 # Au début, le mot n'est pas encore trouvé
-mot_trouve = False
+#mot_trouve = False
 
 # Tant que le mot n'a pas été trouvé, on demande de rentrer une lettre 
-while not mot_trouve and (nb_tentatives > 0):
+#while not mot_trouve and (nb_tentatives > 0):
+while nb_tentatives > 0:
 
 	# Si le mot est trouvé (plus de - dedans), on stope la boucle
 	if not "-" in mot_cache:
@@ -49,53 +93,55 @@ while not mot_trouve and (nb_tentatives > 0):
 		break
 
 	# S'il n'est pas trouvé, on demande de rentrer une lettre
-	lettre_proposee = input("Propose une lettre : ")
+	lettre_proposee = input("Propose une lettre (sans accent) : ")
 
 	# A voir si on ne le remonte pas d'un cran
 	os.system("clear")
 
 	# Si y'a pas qu'une seule lette OU que pas de lettre du tout
-	if (len(lettre_proposee) > 1) or (not lettre_proposee) or (lettre_proposee not in lettres_possibles) :
+	if (len(lettre_proposee) > 1) or (not lettre_proposee) or (lettre_proposee not in lettres_possibles):
 		print("Une lettre j'ai dit, baltringue !")
+		print_etat_jeu()
 		# On revient au début de la boucle while
 		continue
 
+	# On regarde si la lettre proposée ne l'a pas déjà été, si oui, on en redemande une !
 	if lettre_proposee in liste_lettres_testees:
 		print("Tu as déjà proposé la lettre :", lettre_proposee)
+		print_etat_jeu()
 		continue
 
-	# On regarde si la lettre proposée ne l'a pas déjà été, et qu'elle est dans le mot à trouver
-	if (lettre_proposee not in liste_lettres_testees) and (lettre_proposee in mot_random) :
-		occurence_lettre_proposee = mot.count(lettre_proposee)
-		print("GG, t'as trouvé une des lettres. Le mot contient", occurence_lettre_proposee, "fois la lettre", lettre_proposee)
-		print("Nombre de tentatives restantes :", nb_tentatives)
+	# On ajoute la lettre à la liste de toutes les lettres déjà proposées
+	liste_lettres_testees.append(lettre_proposee)
 
-		# Enumerate permet de voir l'index de chaque lettre > utile pour les doublons
-		for index, lettre in enumerate(mot_random):
-			
-			if lettre == lettre_proposee:
-				index_lettre_proposee = index
-				# On remplace le tiret du bon index par la lettre
-				mot_cache[index_lettre_proposee] = lettre_proposee
+	# On déclare une variable pour enregistrer soit la lettre proposée, soit la lettre proposée + toutes ses variables si elle a
+	lettres = lettre_proposee
 
-		# On repasse la liste en string en joignant chaque lettre					
-		print("Continue comme ça !", "".join(mot_cache))
+	if lettre_proposee in correspondance.keys():
+		lettres = correspondance[lettre_proposee]
+
+	# On récupère la valeur de lettre_trouvee avec return, True ou False
+	lettre_trouvee = test_lettre_proposee()
+
+	if lettre_trouvee:					
+		print("Continue comme ça !")
+		print_etat_jeu()
 
 	# Si la lettre proposée n'est pas dans le mot à trouver
 	else:
 		print("Caramba, encore raté !")
 		# On met à jour le nombre d'essais possibles
 		nb_tentatives = nb_tentatives - 1
+
 		if nb_tentatives == 0:
 			print("Pendu ! Try again bro.")
+			print("~~~~~~~~~~~~~~~~~~~~~")
+			print("Le mot à deviner était : ", mot_random)
+			print("~~~~~~~~~~~~~~~~~~~~~")
 			break
-		else:
-			print("Nombre de tentatives restantes :", nb_tentatives)
-			print("".join(mot_cache))
 
-	# On ajoute la lettre à la liste de toutes les lettres déjà proposées
-	liste_lettres_testees.append(lettre_proposee)
-	print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
+		else:
+			print_etat_jeu()
 
 
 
