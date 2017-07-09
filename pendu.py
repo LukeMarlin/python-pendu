@@ -3,14 +3,14 @@ import string
 import os
 
 # On ouvre un fichier de mots FR avec lesquels on va jouer
-#dico_mots = open("dictionnaire_francais.txt")
+dico_mots = open("dictionnaire_francais.txt")
 
-liste_mots = ["eyélàè"]
+liste_mots = []
 
 # On met chaque mot du dico dans une liste
-#for each_mot in dico_mots:
-#	mot = each_mot.strip()
-#	liste_mots.append(mot)
+for each_mot in dico_mots:
+	mot = each_mot.strip()
+	liste_mots.append(mot)
 
 # On prépare une liste qui enregistrera toutes les lettres essayées
 liste_lettres_testees = []
@@ -44,48 +44,9 @@ lettres_possibles = list(string.ascii_letters)
 # On définit le nombre de tentatives
 nb_tentatives = 10 
 
+# Boucle principale du jeu, quand tout est bon et qu'il affiche la lettre proposée dans le mot
+def test_lettre_proposee():
 
-# Au début, le mot n'est pas encore trouvé
-mot_trouve = False
-
-# Tant que le mot n'a pas été trouvé, on demande de rentrer une lettre 
-while not mot_trouve and (nb_tentatives > 0):
-
-	# Si le mot est trouvé (plus de - dedans), on stope la boucle
-	if not "-" in mot_cache:
-		mot_trouve = True
-		print("Tu pèses gros !")
-		break
-
-	# S'il n'est pas trouvé, on demande de rentrer une lettre
-	lettre_proposee = input("Propose une lettre (sans accent) : ")
-
-	# A voir si on ne le remonte pas d'un cran
-	os.system("clear")
-
-	# Si y'a pas qu'une seule lette OU que pas de lettre du tout
-	if (len(lettre_proposee) > 1) or (not lettre_proposee) or (lettre_proposee not in lettres_possibles):
-		print("Une lettre j'ai dit, baltringue !")
-		print("".join(mot_cache))
-		print("Nombre de tentatives restantes :", nb_tentatives)
-		print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
-		# On revient au début de la boucle while
-		continue
-
-	# On regarde si la lettre proposée ne l'a pas déjà été, si oui, on en redemande une !
-	if lettre_proposee in liste_lettres_testees:
-		print("Tu as déjà proposé la lettre :", lettre_proposee)
-		print("".join(mot_cache))
-		print("Nombre de tentatives restantes :", nb_tentatives)
-		print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
-		continue
-
-	# On déclare une variable pour enregistrer soit la lettre proposée, soit la lettre proposée + toutes ses variables si elle a
-	lettres = lettre_proposee
-
-	if lettre_proposee in correspondance.keys():
-		lettres = correspondance[lettre_proposee]
-	
 	lettre_trouvee = False
 
 	# Pour chaque lettre proposée (lettre de base et éventuellement variantes)	
@@ -105,29 +66,82 @@ while not mot_trouve and (nb_tentatives > 0):
 					# On remplace le tiret du bon index par la lettre
 					mot_cache[index] = each_lettre
 
-	if lettre_trouvee:
-		# On repasse la liste en string en joignant chaque lettre					
+	return lettre_trouvee
+
+
+# Fonction pour printer le résultat à chaque fois
+def print_etat_jeu():
+	print("~~~~~~~~~~~~~~~~~~~~~")
+	# On repasse la liste en string en joignant chaque lettre
+	print("Mot à deviner :", "".join(mot_cache))
+	print("~~~~~~~~~~~~~~~~~~~~~")
+	print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
+	print("Nombre de tentatives restantes :", nb_tentatives)
+	print("~~~~~~~~~~~~~~~~~~~~~")
+
+# Au début, le mot n'est pas encore trouvé
+#mot_trouve = False
+
+# Tant que le mot n'a pas été trouvé, on demande de rentrer une lettre 
+#while not mot_trouve and (nb_tentatives > 0):
+while nb_tentatives > 0:
+
+	# Si le mot est trouvé (plus de - dedans), on stope la boucle
+	if not "-" in mot_cache:
+		mot_trouve = True
+		print("Tu pèses gros !")
+		break
+
+	# S'il n'est pas trouvé, on demande de rentrer une lettre
+	lettre_proposee = input("Propose une lettre (sans accent) : ")
+
+	# A voir si on ne le remonte pas d'un cran
+	os.system("clear")
+
+	# Si y'a pas qu'une seule lette OU que pas de lettre du tout
+	if (len(lettre_proposee) > 1) or (not lettre_proposee) or (lettre_proposee not in lettres_possibles):
+		print("Une lettre j'ai dit, baltringue !")
+		print_etat_jeu()
+		# On revient au début de la boucle while
+		continue
+
+	# On regarde si la lettre proposée ne l'a pas déjà été, si oui, on en redemande une !
+	if lettre_proposee in liste_lettres_testees:
+		print("Tu as déjà proposé la lettre :", lettre_proposee)
+		print_etat_jeu()
+		continue
+
+	# On ajoute la lettre à la liste de toutes les lettres déjà proposées
+	liste_lettres_testees.append(lettre_proposee)
+
+	# On déclare une variable pour enregistrer soit la lettre proposée, soit la lettre proposée + toutes ses variables si elle a
+	lettres = lettre_proposee
+
+	if lettre_proposee in correspondance.keys():
+		lettres = correspondance[lettre_proposee]
+
+	# On récupère la valeur de lettre_trouvee avec return, True ou False
+	lettre_trouvee = test_lettre_proposee()
+
+	if lettre_trouvee:					
 		print("Continue comme ça !")
-		print("".join(mot_cache))
-		print("Nombre de tentatives restantes :", nb_tentatives)
+		print_etat_jeu()
 
 	# Si la lettre proposée n'est pas dans le mot à trouver
 	else:
 		print("Caramba, encore raté !")
-		print("".join(mot_cache))
 		# On met à jour le nombre d'essais possibles
 		nb_tentatives = nb_tentatives - 1
+
 		if nb_tentatives == 0:
-			rint("".join(mot_cache))
 			print("Pendu ! Try again bro.")
+			print("~~~~~~~~~~~~~~~~~~~~~")
+			print("Le mot à deviner était : ", mot_random)
+			print("~~~~~~~~~~~~~~~~~~~~~")
 			break
+
 		else:
-			print("Nombre de tentatives restantes :", nb_tentatives)
-
-
-	# On ajoute la lettre à la liste de toutes les lettres déjà proposées
-	liste_lettres_testees.append(lettre_proposee)
-	print("Tu as déjà proposé ces lettres :", liste_lettres_testees)
+			print_etat_jeu()
 
 
 
